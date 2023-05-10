@@ -7,7 +7,7 @@ CHUNK =  4096 # 1度にどれくらい音を録るか
 FORMAT = pyaudio.paInt16
 CHANNELS = 1 # モノナルなら1、ステレオなら2。今回はラズパイなので1
 RATE = 48000 # サンプリングレート
-RECORD_SECONDS = 10 # 録音する秒数
+RECORD_SECONDS = 15 # 録音する秒数
 
 dev_index = 1 # デバイスのインデックス
 
@@ -29,6 +29,7 @@ with wave.open('output.wav', 'wb') as wf:
     print('Recording...')
     for _ in range(0, RATE // CHUNK * RECORD_SECONDS):
         wf.writeframes(stream.read(CHUNK, exception_on_overflow = False))
+    print('Recording Completed')
 
     stream.close()
     p.terminate()
