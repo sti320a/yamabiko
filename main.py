@@ -8,17 +8,24 @@ import json
 from pprint import pprint
 from datetime import datetime
 
-def get_weather_forecast():
+def get_weather_forecast(tomorrow_or_today):
     url = 'https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json'
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
         # 明日の天気情報を取得
-        time = data[0]['timeSeries'][0]['timeDefines'][-1]
-        dtime = datetime.fromisoformat(time)
-        time = datetime.strftime(dtime, '%m月%d日 %H時')
-        tomorrow_weather = data[0]['timeSeries'][0]['areas'][0]['weathers'][-1].replace("\u3000", " ")
-        return f"明日、{time}の天気は、{tomorrow_weather}です"
+        if tomorrow_or_today == "tomorrow":
+            time = data[0]['timeSeries'][0]['timeDefines'][-1]
+            dtime = datetime.fromisoformat(time)
+            time = datetime.strftime(dtime, '%m月%d日 %H時')
+            tomorrow_weather = data[0]['timeSeries'][0]['areas'][0]['weathers'][-1].replace("\u3000", " ")
+            return f"明日、{time}の天気は、{tomorrow_weather}です"
+        else:
+            time = data[0]['timeSeries'][0]['timeDefines'][0]
+            dtime = datetime.fromisoformat(time)
+            time = datetime.strftime(dtime, '%m月%d日 %H時')
+            tomorrow_weather = data[0]['timeSeries'][0]['areas'][0]['weathers'][0].replace("\u3000", " ")
+            return f"{time}の天気は、{tomorrow_weather}です"
     else:
         return "天気予報の取得でエラーが発生しました"
 
@@ -70,8 +77,9 @@ print(sentence) # 認識結果を出力
 answer_sentence = "すみません、よくわかりません"
 
 if "明日の天気" in sentence:
-    answer_sentence  = get_weather_forecast()
-
+    answer_sentence  = get_weather_forecast("tomorrow")
+elif "天気" in sentence:
+    answer_sentence  = get_weather_forecast("today")
 
 # openjtalk.py
 import pyopenjtalk
