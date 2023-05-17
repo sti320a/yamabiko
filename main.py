@@ -26,7 +26,7 @@ CHUNK =  4096 # 1度にどれくらい音を録るか
 FORMAT = pyaudio.paInt16
 CHANNELS = 1 # モノナルなら1、ステレオなら2。今回はラズパイなので1
 RATE = 48000 # サンプリングレート
-RECORD_SECONDS = 5 # 録音する秒数
+RECORD_SECONDS = 3 # 録音する秒数
 
 dev_index = 1 # デバイスのインデックス
 
