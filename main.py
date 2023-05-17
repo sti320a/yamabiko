@@ -3,6 +3,25 @@ import sys
 
 import pyaudio
 
+import requests
+import json
+from pprint import pprint
+from datetime import datetime
+
+def get_weather_forecast():
+    url = 'https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json'
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        # 明日の天気情報を取得
+        time = data[0]['timeSeries'][0]['timeDefines'][-1]
+        dtime = datetime.fromisoformat(time)
+        time = datetime.strftime(dtime, '%m月%d日 %H時')
+        tomorrow_weather = data[0]['timeSeries'][0]['areas'][0]['weathers'][-1].replace("\u3000", " ")
+        return f"明日、{time}の天気は、{tomorrow_weather}です"
+    else:
+        return "天気予報の取得でエラーが発生しました"
+
 CHUNK =  4096 # 1度にどれくらい音を録るか
 FORMAT = pyaudio.paInt16
 CHANNELS = 1 # モノナルなら1、ステレオなら2。今回はラズパイなので1
@@ -48,11 +67,15 @@ sentence = result["text"]
 print(sentence) # 認識結果を出力
 
 
+if "明日の天気" in sentence:
+    answer_sentence  = get_weather_forecast()
+
+
 # openjtalk.py
 import pyopenjtalk
 from scipy.io import wavfile
 import numpy as np
-x, sr = pyopenjtalk.tts(sentence)
+x, sr = pyopenjtalk.tts(answer_sentence)
 answer_wav_name = "answer.wav"
 wavfile.write(answer_wav_name, sr, x.astype(np.int16))
 
