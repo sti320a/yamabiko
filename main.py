@@ -26,7 +26,7 @@ CHUNK =  4096 # 1度にどれくらい音を録るか
 FORMAT = pyaudio.paInt16
 CHANNELS = 1 # モノナルなら1、ステレオなら2。今回はラズパイなので1
 RATE = 48000 # サンプリングレート
-RECORD_SECONDS = 15 # 録音する秒数
+RECORD_SECONDS = 5 # 録音する秒数
 
 dev_index = 1 # デバイスのインデックス
 
@@ -66,6 +66,8 @@ result = model.transcribe("output.wav", verbose=True, language="ja") # 音声フ
 sentence = result["text"]
 print(sentence) # 認識結果を出力
 
+
+answer_sentence = "すみません、よくわかりません"
 
 if "明日の天気" in sentence:
     answer_sentence  = get_weather_forecast()
